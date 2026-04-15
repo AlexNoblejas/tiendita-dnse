@@ -197,10 +197,13 @@ function handleVision(imageBase64, mimeType) {
       }
     };
 
-    const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=' + GEMINI_API_KEY;
+    const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent';
     const resp = UrlFetchApp.fetch(url, {
       method: 'post',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'X-goog-api-key': GEMINI_API_KEY 
+      },
       payload: JSON.stringify(payload),
       muteHttpExceptions: true
     });
