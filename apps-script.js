@@ -1,15 +1,26 @@
 // ═══════════════════════════════════════════════════════
 //  TIENDITA DNSE · CEPLAN
 //  Google Apps Script — Sheets + Vision Proxy
-//  Pega TODO este código en tu Apps Script y haz
-//  una NUEVA implementación como Aplicación Web
 // ═══════════════════════════════════════════════════════
+
+/**
+ * 🛠 FUNCIÓN PARA AUTORIZAR TODO
+ * Selecciona esta función arriba y dale a "Ejecutar" para que
+ * Google te pida los permisos de Gemini y Google Drive.
+ */
+function PROBAR_PERMISOS() {
+  Logger.log("Probando permisos de Drive...");
+  DriveApp.getRootFolder().getName(); // Fuerza permiso de Drive
+  Logger.log("Probando permisos de Web...");
+  UrlFetchApp.fetch("https://www.google.com"); // Fuerza permiso de Internet
+  Logger.log("¡PERMISOS CONCEDIDOS CON ÉXITO! 🎉");
+}
 
 const SHEET_ID = '1B17IQSxZ6KiIFzIfj6ECSq60J9pAnZDZb19XftT_AaA';
 const SHEET_NAME = 'Hoja 1';
 // 🌟 NUEVO: Usamos Google Gemini 1.5 Flash para mejor reconocimiento (¡Más rápido y en español!)
 // Obtén tu API key gratis en: https://aistudio.google.com/app/apikey
-const GEMINI_API_KEY = 'AIzaSyDImWAUnYG72hXlpCoryzcDX6opWbfZhZo';
+const GEMINI_API_KEY = 'AIzaSyCc2xUwEGi0nRs8sp-hngvXjWQ0vyx8GrE';
 
 // ── CORS helper — Simple JSON utility ──
 function jsonOk(data) {
@@ -132,8 +143,8 @@ function writeRow(data) {
       const file = folder.createFile(blob);
       photoUrl = file.getUrl();
     } catch (e) {
-      Logger.log('Drive Error: ' + e);
-      photoUrl = 'Error al subir foto';
+      Logger.log('Drive Error: ' + e.message);
+      photoUrl = 'Error Drive: ' + e.message;
     }
   }
 
@@ -186,7 +197,7 @@ function handleVision(imageBase64, mimeType) {
       }
     };
 
-    const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' + GEMINI_API_KEY;
+    const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=' + GEMINI_API_KEY;
     const resp = UrlFetchApp.fetch(url, {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
