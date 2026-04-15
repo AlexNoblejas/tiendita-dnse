@@ -700,7 +700,7 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sa
 // ╔══════════════════════════════════════
 // ║  CONFIG — PEGA TU URL DE APPS SCRIPT
 // ╚══════════════════════════════════════
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbz0mMdXFLWsk82y43DzLVIgAGC3fCh6yuLG1JruOwTThaPjjtKxNQ_4cqOWf4E-g7JD/exec';
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbx3bPpiTzH5CiV1GZ2y2oqJ_xPwP9igS7EHsl7h5IQNkDONkeT1ZXgl4nYm5GjSwJez/exec';
 
 // ╔══════════════════════════════════════
 // ║  DATOS
@@ -1028,15 +1028,15 @@ async function detectSnack(base64DataUrl){
     });
     if(!resp.ok) throw new Error('HTTP '+resp.status);
     const data = await resp.json();
-    showAiResult(data.name || '', data.source || 'gemini');
+    showAiResult(data.name || '', data.source || 'gemini', data.error);
   } catch(err) {
     console.error('Vision error:', err);
     if(statusEl) statusEl.textContent = '⚠️ IA no disponible — escribe el nombre';
-    showAiResult('', 'manual');
+    showAiResult('', 'manual', err.message);
   }
 }
 
-function showAiResult(name, source){
+function showAiResult(name, source, error){
   document.getElementById('ai-loading').style.display='none';
   document.getElementById('ai-result').style.display='block';
   // keep photo visible
@@ -1046,11 +1046,16 @@ function showAiResult(name, source){
   }
   document.getElementById('ctxt').value = name;
   document.getElementById('ctxt-manual').value = name;
-  const srcText = source==='gemini' ? '✨ Gemini detectó · edita si hace falta'
+  
+  let srcText = source==='gemini' ? '✨ Gemini detectó · edita si hace falta'
     : source==='manual' ? '📝 Escribe el nombre del snack 👆'
     : source==='llama' ? '✨ Llama Vision detectó · edita si hace falta'
     : '✨ detectado · edita si hace falta';
+    
+  if(error) srcText = '⚠️ ' + error;
+  
   document.getElementById('ai-desc').textContent = srcText;
+  document.getElementById('ai-desc').style.color = error ? 'var(--red)' : 'var(--mu)';
   chkCf();
 }
 

@@ -210,10 +210,13 @@ function handleVision(imageBase64, mimeType) {
         return jsonOk({ ok: true, name: name, source: 'gemini' });
       }
     } else {
-      Logger.log('Gemini error: ' + body);
+      Logger.log('ERROR GEMINI (' + code + '): ' + body);
+      // Enviamos el error al frontend para que el usuario sepa qué pasa
+      return jsonOk({ ok: false, name: '', source: 'manual', error: 'Error API Gemini: ' + code });
     }
   } catch (e) {
-    Logger.log('Gemini exception: ' + e.message);
+    Logger.log('EXCEPCIÓN GEMINI: ' + e.message);
+    return jsonOk({ ok: false, name: '', source: 'manual', error: 'Excepción: ' + e.message });
   }
 
   // Fallback si falla Gemini
